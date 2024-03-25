@@ -6,6 +6,8 @@ This guide walks you through the process of creating a Spring application connec
 
 ## Manual Steps
 
+![Example Spring Initializer Selection](SprintInitializerConfig.png)
+
 1. Use Spring Boot Initializer to create a default project.
     * Navigate to https://start.spring.io.
     * This service pulls in all the dependencies you need for an application and does most of the setup for you.
