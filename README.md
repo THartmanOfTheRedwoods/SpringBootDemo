@@ -67,20 +67,44 @@ java -jar target/demo-0.0.1-SNAPSHOT.war
 
 * Now that the application is running, you can test it by using curl or similar tool.
 * You have two **HTTP endpoints** that you can test:
-    * GET localhost:8080/demo/all: Gets all data.
-    * POST localhost:8080/demo/add: Adds one user to the data.
+    * GET localhost:8080/user/all: Gets all data.
+    * POST localhost:8080/user/add: Adds one user to the data.
 
 * The following curl command adds a user:
     * The reply should be **Saved**
 ```bash
-curl -d name=Trevor -d email=trevor-hartman@redwoods.edu http://localhost:8080/demo/add
+curl -d name=Trevor -d email=trevor-hartman@redwoods.edu http://localhost:8080/user/add
 ```
 
 * The following command shows all the users:
     * The reply should be similar to ```[{"id":1,"name":"Trevor","email":"trevor-hartman@redwoods.edu"}]```
 ```bash
-curl http://localhost:8080/demo/all
+curl http://localhost:8080/user/all
 ````
+
+* The following command shows users with matching e-mail:
+    * The reply should be similar to ```[{"id":1,"name":"Trevor","email":"trevor-hartman@redwoods.edu"}]```
+```bash
+curl -X GET http://localhost:8080/user/email?email=trevor-hartman@redwoods.edu
+```
+
+* The following command gets the possessions for a particular user with id
+    * The reply should be similar to ```[{"id":1,"name":"Raspberry Pi 5","description":"2024 Micro-computer from the Pi-Foundataion","user":1,"itemLabel":null},{"id":2,"name":"Raspberry Pi 4","description":"2018 Micro-computer from the Pi-Foundataion","user":1,"itemLabel":"000000000001"},{"id":3,"name":"Raspberry Pi 4","description":"2018 Micro-computer from the Pi-Foundataion","user":1,"itemLabel":"000000000002"},{"id":4,"name":"Raspberry Pi 3","description":"2015 Micro-computer from the Pi-Foundataion","user":1,"itemLabel":null},{"id":52,"name":"Raspberry Pi 3","description":"2015 Micro-computer from the Pi-Foundataion","user":1,"itemLabel":null}]```
+```bash
+curl -X GET http://localhost:8080/user/possessions?user=1
+```
+
+* The following command finds possessions belonging to a user id
+    * The reply should be similar to ```[{"id":1,"name":"Raspberry Pi 5","description":"2024 Micro-computer from the Pi-Foundataion","user":1}]```
+```bash
+curl -X GET http://localhost:8080/possession/get?user=1
+```
+
+* The following command adds a possession to a user by user id
+    * The reply should be similar to ```Saved```
+```bash
+curl -X POST -d itemLabel='000000000001' -d name='Raspberry Pi 4' -d description='2018 Micro-computer from the Pi-Foundataion' -d user=1 http://localhost:8080/possession/add
+```
 
 ## Make Some Security Changes
 
