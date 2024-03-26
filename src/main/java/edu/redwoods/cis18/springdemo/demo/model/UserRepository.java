@@ -11,8 +11,8 @@ import java.util.List;
 // Below, UserRepository will be AUTO IMPLEMENTED by Spring into a Bean called
 // userRepository. CRUD refers to Create, Read, Update, Delete
 public interface UserRepository extends CrudRepository<User, Integer> {
-    // Spring Data JPA lets you define other query methods simply by declaring their method signature.
-    // For example, userRepository includes the findByEmail() method, and this gets auto-wired to our
-    // User getEmail() getter.
+    // Spring Data JPA lets you define other query methods simply by declaring their method signature. For example,
+    // the userRepository bean includes the **findByEmail** method after this, and it gets auto-wired to our User entity
+    // getEmail getter via JPA.
     List<User> findByEmail(String email);
 }

@@ -15,16 +15,19 @@ public class Possessions implements Serializable {
 
     private String name;
     private String description;
-    @ManyToOne(fetch=FetchType.LAZY, optional=false) // This is the Many side.
+    // This is the Many side of a 1:M relationship.
+    // Lazy means don't fetch until accessed.
+    // Optional=false means participation in the relationship is NOT optional
+    @ManyToOne(fetch=FetchType.LAZY, optional=false)
     @JoinColumn(name="user_id", nullable=false) // This is the table column (i.e. FK) we expect to join on.
-    // The next 2 annotations will simply put "user": id in REST responses instead of nesting a User object which contains
-    // references to Possessions
+    // The next 2 annotations will simply put "user": id in Json REST responses instead of nesting a User object which
+    // contains a reference to multiple other Possessions in the Json response.
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
-    private User user; // This will have getters and setters just like normal
+    private User user; // This will have getters and setters just like normal instance fields
 
-    @Column(unique=true) // Must have a unique constraint.
-    private String itemLabel;  // This should be a upc or qr code
+    @Column(unique=true) // Must have a unique constraint since we don't want duplicate UPC/QR codes.
+    private String itemLabel; // This should be a UPC or QR code
 
     public User getUser() {
         return user;
@@ -58,6 +61,15 @@ public class Possessions implements Serializable {
         this.description = description;
     }
 
+    public String getItemLabel() {
+        return itemLabel;
+    }
+
+    public void setItemLabel(String itemLabel) {
+        this.itemLabel = itemLabel;
+    }
+
+    // This method is overridden so that the DATABASE record id is used for comparing object equality.
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -66,16 +78,9 @@ public class Possessions implements Serializable {
         return id.equals(possessions.id);
     }
 
+    // This method is overridden so that the object id will be tied to the DATABASE record id.
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    public String getItemLabel() {
-        return itemLabel;
-    }
-
-    public void setItemLabel(String itemLabel) {
-        this.itemLabel = itemLabel;
     }
 }

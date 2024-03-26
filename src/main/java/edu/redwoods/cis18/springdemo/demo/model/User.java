@@ -19,13 +19,16 @@ public class User implements Serializable {
     private String email;
 
 
-    @OneToMany(mappedBy="user", fetch=FetchType.LAZY, cascade=CascadeType.ALL) // This is the ONE side
-    // The next 2 annotations will simply put "possessions": ids in REST responses instead of nesting possession objects
-    // which contains references to Users
+    // This is the ONE side of a 1:M relationship
+    // Lazy means don't fetch until accessed.
+    // Cascade means cascade deletes and updates in the underlying database.
+    @OneToMany(mappedBy="user", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+    // The next 2 annotations will simply put "possessions": ids in REST responses instead of nesting possession
+    // objects. This will be a list in Json because there are a list of ids. Without this, object nesting will occur.
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
-    private Set<Possessions> possessions; // This will have getters and setters just like normal
-    // NOTE: since this will reference MANY, we use a data-structure that can handle MANY results.
+    private Set<Possessions> possessions; // This will have getters and setters just like normal instance fields.
+    // NOTE: since this will reference MANY possessions, we use a data-structure that can handle MANY results (Set).
 
     public Integer getId() {
         return id;
@@ -59,6 +62,7 @@ public class User implements Serializable {
         this.possessions = possessions;
     }
 
+    // This method is overridden so that the DATABASE record id is used for comparing object equality.
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -67,6 +71,7 @@ public class User implements Serializable {
         return id.equals(user.id);
     }
 
+    // This method is overridden so that the object id will be tied to the DATABASE record id.
     @Override
     public int hashCode() {
         return Objects.hash(id);
